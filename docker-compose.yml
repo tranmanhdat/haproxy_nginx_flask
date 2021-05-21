@@ -1,0 +1,39 @@
+version: '3'
+services:
+    server_1:
+        container_name: server_1
+        build: ./server_1
+        networks: 
+            network_1:
+                ipv4_address: 192.10.0.2
+    server_2:
+        container_name: server_2
+        build: ./server_2
+        networks: 
+            network_2:
+                ipv4_address: 192.20.0.2
+    haproxy_server:
+        container_name: haproxy_server
+        build: ./haproxy_server 
+        ports:
+        - "80:80"
+        - "8900:8900"
+        networks: 
+            network_1:
+                ipv4_address: 192.10.0.3
+            network_2:
+                ipv4_address: 192.20.0.3
+        depends_on:
+        - server_1
+        - server_2
+networks:
+    network_1:
+        ipam:
+            driver: default
+            config:
+                - subnet: "192.10.0.0/16"
+    network_2:
+        ipam:
+            driver: default
+            config:
+                - subnet: "192.20.0.0/16"
